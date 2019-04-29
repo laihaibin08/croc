@@ -19,6 +19,7 @@ type Comm struct {
 // IsClosed checks if connection is closed
 func (c Comm) IsClosed() bool {
 	one := []byte{}
+	fmt.Println(c.connection)
 	c.connection.SetReadDeadline(time.Now())
 	if _, err := c.connection.Read(one); err == io.EOF {
 		c.connection.Close()
@@ -35,9 +36,6 @@ func NewConnection(address string) (c Comm, err error) {
 	if err != nil {
 		return
 	}
-	connection.SetReadDeadline(time.Now().Add(3 * time.Hour))
-	connection.SetDeadline(time.Now().Add(3 * time.Hour))
-	connection.SetWriteDeadline(time.Now().Add(3 * time.Hour))
 	c = New(connection)
 	return
 }

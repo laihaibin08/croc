@@ -55,7 +55,7 @@ func Run(debugLevel, port string) {
 }
 
 func run(port string) (err error) {
-	log.Debugf("starting TCP server on " + port)
+	log.Debugf("starting TCP server on tcp: 0.0.0.0:" + port)
 	server, err := net.Listen("tcp", "0.0.0.0:"+port)
 	if err != nil {
 		log.Error(err)
