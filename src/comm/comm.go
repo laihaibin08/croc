@@ -32,7 +32,7 @@ func (c Comm) IsClosed() bool {
 
 // NewConnection gets a new comm to a tcp address
 func NewConnection(address string) (c Comm, err error) {
-	connection, err := net.DialTimeout("tcp", address, 1*time.Second)
+	connection, err := net.DialTimeout("tcp", address, 3*time.Second)
 	if err != nil {
 		return
 	}
