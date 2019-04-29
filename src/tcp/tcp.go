@@ -9,7 +9,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/schollz/croc/src/comm"
 	"github.com/schollz/croc/src/logger"
-	"github.com/schollz/croc/src/models"
 )
 
 const TCP_BUFFER_SIZE = 1024 * 64
@@ -59,14 +58,18 @@ func run(port string) (err error) {
 	log.Debugf("starting TCP server on " + port)
 	server, err := net.Listen("tcp", "0.0.0.0:"+port)
 	if err != nil {
+		log.Error(err)
 		return errors.Wrap(err, "Error listening on :"+port)
 	}
 	defer server.Close()
 	// spawn a new goroutine whenever a client connects
 	for {
+		log.Debugf("waiting for connection")
 		connection, err := server.Accept()
 		if err != nil {
-			return errors.Wrap(err, "problem accepting connection")
+			err = errors.Wrap(err, "problem accepting connection")
+			log.Error(err)
+			return err
 		}
 		log.Debugf("client %s connected", connection.RemoteAddr().String())
 		go func(port string, connection net.Conn) {

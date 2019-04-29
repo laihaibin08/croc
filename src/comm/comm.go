@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
+	"io"
 	"net"
 	"time"
 
@@ -15,9 +16,22 @@ type Comm struct {
 	connection net.Conn
 }
 
+// IsClosed checks if connection is closed
+func (c Comm) IsClosed() bool {
+	one := []byte{}
+	c.connection.SetReadDeadline(time.Now())
+	if _, err := c.connection.Read(one); err == io.EOF {
+		c.connection.Close()
+		return true
+	} else {
+		c.connection.SetDeadline(time.Now().Add(3 * time.Hour))
+	}
+	return false
+}
+
 // NewConnection gets a new comm to a tcp address
 func NewConnection(address string) (c Comm, err error) {
-	connection, err := net.DialTimeout("tcp", address, 3*time.Hour)
+	connection, err := net.DialTimeout("tcp", address, 1*time.Second)
 	if err != nil {
 		return
 	}
